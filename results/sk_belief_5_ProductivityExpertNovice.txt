@@ -1,0 +1,20 @@
+False
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%Latex Table%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{figure}[!t]
+{\small
+{\small \begin{tabular}{l@{~~~}l@{~~~}r@{~~~}r@{~~~}c}
+\arrayrulecolor{darkgray}
+\rowcolor[gray]{.9}  rank & treatment & median & IQR & \\
+    1 &      novice &    45 &  35 & \quart{31}{35}{45}{100} \\
+    1 &      expert &    47 &  35 & \quart{32}{35}{47}{100} \\
+\end{tabular}}
+}
+\caption{%%%Enter Caption%%%
+}\label{fig:my fig}
+\end{figure}
+%%%%%%%%%%%%%%%%%%%%%%%End Latex Table%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+   1 ,                         novice ,    45.56   , 35.35 (   -*          |              ),21.24, 34.31, 45.56, 61.05, 94.48
+   1 ,                         expert ,    47.79   , 35.9 (   -*          |              ),22.70, 35.26, 47.79, 63.05, 96.25
