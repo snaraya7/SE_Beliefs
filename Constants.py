@@ -26,8 +26,8 @@ SHOULD_NORMALIZE = True
 
 
 
-# refer https://www.medcalc.org/manual/sampling_correlation.php
-SIG_LEVEL = 0.01 # dambros sig level = 0.01 & beta 0.01 & 0.4 rho = 85 samples
+
+SIG_LEVEL = 0.01
 MIN_MOD_RHO = 0.35
 STRONG_MOD_RHO = 0.5
 NUM_RELEASES_TO_CONSIDER = math.inf
