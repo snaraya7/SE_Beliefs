@@ -4,6 +4,10 @@ Software engineering is a highly dynamic discipline. Hence, as times change, sot
 
 ## To reproduce results, see command-line execution instructions (Windows OS) below:
 
+```
+Requires: Python3 (to execute .py files) and Python2 (to execute .bat files)
+```
+
 ### Belief 1
 
 1. python [belief1.py](belief1.py)
