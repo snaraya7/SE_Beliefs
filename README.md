@@ -13,17 +13,17 @@ Requires: Python3 (to execute .py files) and Python2 (to execute .bat files)
 1. python [belief1.py](belief1.py)
 2. [belief1.bat](belief1.bat)
 3. Generates the following tables (as seen in the paper)
-* [belief_1_defect-density.txt](belief_1_defect-density.txt)
-* [belief_1_LOC.txt](belief_1_LOC.txt)
-* [belief_1_productivity.txt](belief_1_productivity.txt)
+* [belief_1_defect-density.txt](results/sk_belief_1_defect-density.txt)
+* [belief_1_LOC.txt](results/sk_belief_1_LOC.txt)
+* [belief_1_productivity.txt](results/sk_belief_1_productivity.txt)
 
 ### Belief 2
 
 1. python [belief2.py](belief2.py)
 2. [belief2.bat](belief2.bat)
 3. Generates the following tables (as seen in the paper)
-* [belief_2_defect-density.txt](belief_2_defect-density.txt)
-* [belief_2_defect-density_all_assignments.txt](belief_2_defect-density_all_assignments.txt)
+* [belief_2_defect-density.txt](results/sk_belief_2_defect-density.txt)
+* [belief_2_defect-density_all_assignments.txt](results/sk_belief_2_defect-density_all_assignments.txt)
 
 ### Belief 3
 
@@ -37,20 +37,20 @@ Requires: Python3 (to execute .py files) and Python2 (to execute .bat files)
 1. python [belief1.py](belief1.py)
 2. [belief1.bat](belief1.bat)
 3. Generates the following tables (as seen in the paper)
-* [belief_4_DefectDensityGroupedByTask10CompletedByProgrammingLanguages.txt](belief_4_DefectDensityGroupedByTask10CompletedByProgrammingLanguages.txt)
-* [belief_4_ProductivityGroupedByProgrammingLanguages.txt] (belief_4_ProductivityGroupedByProgrammingLanguages.txt)
-* [belief_4_ProductivityGroupedByTask10CompletedByProgrammingLanguages.txt](belief_4_ProductivityGroupedByTask10CompletedByProgrammingLanguages.txt)
-* [belief_4_ProductivityGroupedByTasks.txt](belief_4_ProductivityGroupedByTasks.txt)
+* [belief_4_DefectDensityGroupedByTask10CompletedByProgrammingLanguages.txt](results/sk_belief_4_DefectDensityGroupedByTask10CompletedByProgrammingLanguages.txt)
+* [belief_4_ProductivityGroupedByProgrammingLanguages.txt] (results/sk_belief_4_ProductivityGroupedByProgrammingLanguages.txt)
+* [belief_4_ProductivityGroupedByTask10CompletedByProgrammingLanguages.txt](results/sk_belief_4_ProductivityGroupedByTask10CompletedByProgrammingLanguages.txt)
+* [belief_4_ProductivityGroupedByTasks.txt](results/sk_belief_4_ProductivityGroupedByTasks.txt)
 
 ### Belief 5
 
 1. python [belief5.py](belief5.py)
 2. [belief5.bat](belief1.bat)
 3. Generates the following tables (as seen in the paper)
-* [belief_5_DefectDensityExpertNovice.txt](belief_5_DefectDensityExpertNovice.txt)
-* [belief_5_DefectDensityExpertNoviceGroupedByProgrammingLanguage.txt (belief_5_DefectDensityExpertNoviceGroupedByProgrammingLanguage.txt)
-* [belief_5_ProductivityExpertNovice.txt](belief_5_ProductivityExpertNovice.txt)
-* [belief_5_ProductivityExpertNoviceGroupedByProgrammingLanguage.txt](belief_5_ProductivityExpertNoviceGroupedByProgrammingLanguage.txt)
+* [belief_5_DefectDensityExpertNovice.txt](results/sk_belief_5_DefectDensityExpertNovice.txt)
+* [belief_5_DefectDensityExpertNoviceGroupedByProgrammingLanguage.txt (results/sk_belief_5_DefectDensityExpertNoviceGroupedByProgrammingLanguage.txt)
+* [belief_5_ProductivityExpertNovice.txt](results/sk_belief_5_ProductivityExpertNovice.txt)
+* [belief_5_ProductivityExpertNoviceGroupedByProgrammingLanguage.txt](results/sk_belief_5_ProductivityExpertNoviceGroupedByProgrammingLanguage.txt)
 
 ```
 For technical support e-mail Shrikanth N C (nc.shrikanth@gmail.com) with subject `SE Beliefs repository queries'
