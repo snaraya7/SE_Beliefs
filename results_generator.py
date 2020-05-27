@@ -2,7 +2,7 @@
 @author : Shrikanth N C (nc.shrikanth@gmail.com)
 Date: 15 Dec 2019
 Script to assess belief 1 Corbat ́o’s law
-License: Proprietary
+License: See LICENSE file
 """
 
 import os

@@ -2,7 +2,7 @@
 @author : Shrikanth N C (nc.shrikanth@gmail.com)
 Date: 15 Dec 2019
 Script to assess  Mills-Jones Hypothesis (Belief 3)
-License: Proprietary
+License: See LICENSE file
 """
 
 from plotly.graph_objs._deprecations import Annotation

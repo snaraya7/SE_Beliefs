@@ -2,7 +2,7 @@
 @author : Shrikanth N C (nc.shrikanth@gmail.com)
 Date: 15 Dec 2019
 Script to assess Sackman’s Second law (Belief 4)
-License: Proprietary
+License: See LICENSE file
 """
 
 from PSPConstants import *

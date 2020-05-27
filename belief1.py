@@ -2,7 +2,7 @@
 @author : Shrikanth N C (nc.shrikanth@gmail.com)
 Date: 15 Dec 2019
 Script to assess Corbat́o’s law (Belief 1)
-License: Proprietary
+License: See LICENSE file
 """
 
 from PSPConstants import *

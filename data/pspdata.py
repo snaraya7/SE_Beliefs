@@ -1,6 +1,6 @@
 # Authors: Shrikanth N C <snaraya7@ncsu.edu>
 # Date: 15th December 2019
-# License: Proprietary
+# License: See LICENSE file
 
 import pandas as pd
 from PSPConstants import *
