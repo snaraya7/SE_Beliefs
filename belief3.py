@@ -21,7 +21,7 @@ import pandas as pd
 
 def computeCorrelation(X, Y):
 
-    print(X, Y)
+    # print(X, Y)
     pearResult = pearsonr(X, Y)
     pearRho = pearResult[0]
     pearPValue = pearResult[1]
@@ -79,7 +79,7 @@ def deduceCorrelation(xDF, xMetric, yMetric):
     pearRho, pearPValue, spearRho, spearPValue = computeCorrelation(computeMetric(xDF, xMetric), computeMetric(xDF, yMetric))
 
     if spearPValue < SIG_LEVEL:
-        return round(spearRho,1)
+        return spearRho
     else:
         return 0
 
@@ -96,6 +96,7 @@ def exportBoxPlot():
 
     rowIndex = 1
     colIndex = 1
+    outputStr = '**** \t Output \t *****\n\n'
     for i in range(0, len(METRICS)):
 
         for j in range((i+1), len(METRICS)):
@@ -105,7 +106,7 @@ def exportBoxPlot():
 
 
 
-            columnValues = []
+
             annotationList = []
             xMetric = METRICS[i]
             yMetric = METRICS[j]
@@ -122,7 +123,10 @@ def exportBoxPlot():
 
             local_boxplot_data = []
             xIndex = 0
+
             for pl in PROGRAMMING_LANGUAGES:
+
+                columnValues = []
 
                 plDF = df[df[PROGRAMMINGLANGUAGE_COLNAME] == pl]
 
@@ -139,7 +143,7 @@ def exportBoxPlot():
                 if xMetric == 'DD' or yMetric == 'DD':
                     bcolor = orange
 
-
+                outputStr += pl + " median = " + str(np.median(columnValues)) + " values = " + str(columnValues) +"\n"
                 local_boxplot_data.append(go.Box(fillcolor=bcolor,
                                                  marker=dict(color=black),
                                                  y=columnValues,
@@ -169,15 +173,20 @@ def exportBoxPlot():
 
 
 
-            if i == len(METRICS) - 2:
-                programmingLanguageDF['Language'] = plCol
-                programmingLanguageDF['PA'] = paCol
+            # if i == len(METRICS) - 2:
+            #     programmingLanguageDF['Language'] = plCol
+            #     programmingLanguageDF['PA'] = paCol
 
             fileName = ""+xMetric + '-' + yMetric
 
-            plot_boxes(local_boxplot_data,annotationList, "img_belief3_"+fileName+".png" ,
+            try:
+                plot_boxes(local_boxplot_data,annotationList, "img_belief3_"+fileName+".png" ,
                '',
                label+"", 0, 1)
+                print(outputStr)
+            except:
+                print(outputStr)
+
 
 
 
@@ -194,7 +203,7 @@ def plot_boxes(data, annotationList, filename ,xaxisLabel, yAxisLabel, firstLine
 
         title='',
 
-        margin=dict(l=110, r=10, t=15, b=40),
+        margin=dict(l=110, r=10, t=15, b=50),
 
         xaxis=dict(
             title='<b>' + xAxisTitle,
@@ -225,9 +234,9 @@ def plot_boxes(data, annotationList, filename ,xaxisLabel, yAxisLabel, firstLine
         yaxis=dict(
             title="<b> "+yAxisLabel ,
             automargin=False,
-            range=[-1, 0],
+            range=[-1, 0.25],
             showgrid=True,
-            zeroline=True,
+            zeroline=False,
             showline=True,
             showticklabels=True,
 
@@ -248,7 +257,7 @@ def plot_boxes(data, annotationList, filename ,xaxisLabel, yAxisLabel, firstLine
             )
         ),
 
-        annotations=Annotations(annotationList)
+        # annotations=Annotations(annotationList)
 
     )
 
