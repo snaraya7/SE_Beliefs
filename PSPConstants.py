@@ -12,8 +12,12 @@ import math
 MINIMUM_SAMPLE_SIZE = 50
 MAX_SAMPLE_SIZE = math.inf #100
 
-PROGRAM_ASSIGNMENT_LIST_LEVEL2 = [ str(x)+'A' for x in range(7,11)]
+
 PROGRAM_ASSIGNMENT_LIST_ALL = [ str(x)+'A' for x in range(1,11)]
+
+PROGRAM_ASSIGNMENT_LIST_LEVEL0 = [ str(x)+'A' for x in range(1,4)]
+PROGRAM_ASSIGNMENT_LIST_LEVEL1 = [ str(x)+'A' for x in range(4,7)]
+PROGRAM_ASSIGNMENT_LIST_LEVEL2 = [ str(x)+'A' for x in range(7,11)]
 
 PROGRAMMING_LANGUAGES = ['C', 'C++', 'C#', 'JAVA', 'VB']
 
@@ -134,7 +138,20 @@ LOC_MIN_COLNAME  =  'LOC/Min'
 TASK_COLNAME  =  'Task'
 
 
+def normalize(samples, minVal, maxVal):
 
+
+
+    normCol = []
+
+    for v in samples:
+
+        normalizedValue = (v - minVal) / ((maxVal - minVal) + 0.000000001)
+
+        normCol.append(normalizedValue * 100)
+
+
+    return normCol
 
 
 

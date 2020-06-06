@@ -21,7 +21,7 @@ import pandas as pd
 
 def computeCorrelation(X, Y):
 
-    # print(X, Y)
+
     pearResult = pearsonr(X, Y)
     pearRho = pearResult[0]
     pearPValue = pearResult[1]
@@ -38,7 +38,7 @@ def getProgrammingLanguages(df):
     return list(set(df[PROGRAMMINGLANGUAGE_COLNAME].values.tolist()))
 
 # METRICS = ['P', 'E', 'DD' ,'LOC', 'T']
-METRICS = ['P', 'DD']
+METRICS = ['Test Defects', 'Code Defects']
 
 # fig = make_subplots(
 #     rows=5, cols=2,
@@ -59,18 +59,12 @@ def computeMetric(xDF, metric):
 
     tempDF = pd.DataFrame()
 
-    if metric == 'P':
-        tempDF['temp'] = xDF[ACTLOC_COLNAME] / ((xDF[ACTMIN_COLNAME] - (xDF[ACTMINPLAN_COLNAME] + xDF[ACTMINDSGN_COLNAME])) / 60)
-    elif metric == 'DD':
-        tempDF['temp'] =  xDF[CALC_ACTDEFINJ_COLNAME] / (xDF[ACTLOC_COLNAME] / 1000)
-    elif metric == 'E':
-        tempDF['temp'] = xDF[YEARSPROGRAMMINGEXPERIENCE_COLNAME]
-    elif metric == 'LOC':
-        tempDF['temp'] = xDF[ACTLOC_COLNAME]
-    elif metric == 'T':
-        tempDF['temp'] = xDF[ACTMIN_COLNAME]
+    if metric == 'Code Defects':
+        tempDF['temp'] =    xDF[ACTDEFINJCODE_COLNAME]
+    elif metric == 'Test Defects':
+        tempDF['temp'] =  xDF[ACTDEFREMTEST_COLNAME]
     else:
-        return None
+        float("error")
 
     return tempDF['temp'].values.tolist()
 
@@ -84,11 +78,9 @@ def deduceCorrelation(xDF, xMetric, yMetric):
         return 0
 
 
-
-
 def exportBoxPlot():
 
-    # remove(output_file_name)
+
 
     df = getPSPDF()
 
@@ -104,19 +96,11 @@ def exportBoxPlot():
             if i == j:
                 continue
 
-
-
-
             annotationList = []
             xMetric = METRICS[i]
             yMetric = METRICS[j]
 
-            # label = 'ρ (' + xMetric + ',' + yMetric + ')'
-
-
-            label = 'ρ(Defect-density, Productivity)'
-
-            print(xMetric, yMetric)
+            label = 'ρ ( X , Y )'
 
             plCol = []
             paCol = []
@@ -135,12 +119,15 @@ def exportBoxPlot():
 
                     pl_paDF = plDF[plDF[PROGRAMASSIGNMENT_COLNAME] == pa]
 
+
                     columnValues.append(deduceCorrelation(pl_paDF, xMetric, yMetric))
                     plCol.append(pl)
                     paCol.append(pa)
 
 
-                if xMetric == 'DD' or yMetric == 'DD':
+                if 'time' in xMetric or 'time' in yMetric:
+                    bcolor = blue
+                else:
                     bcolor = orange
 
                 outputStr += pl + " median = " + str(np.median(columnValues)) + " values = " + str(columnValues) +"\n"
@@ -180,7 +167,7 @@ def exportBoxPlot():
             fileName = ""+xMetric + '-' + yMetric
 
             try:
-                plot_boxes(local_boxplot_data,annotationList, "img_belief3_"+fileName+".png" ,
+                plot_boxes(local_boxplot_data,annotationList, "img_P-DD.png" ,
                '',
                label+"", 0, 1)
                 print(outputStr)
@@ -234,7 +221,7 @@ def plot_boxes(data, annotationList, filename ,xaxisLabel, yAxisLabel, firstLine
         yaxis=dict(
             title="<b> "+yAxisLabel ,
             automargin=False,
-            range=[-1, 0.25],
+            range=[0, 1],
             showgrid=True,
             zeroline=False,
             showline=True,
@@ -280,4 +267,5 @@ def plot_boxes(data, annotationList, filename ,xaxisLabel, yAxisLabel, firstLine
     print("Belief 4 correlation distribution (box-plot) exported to  :  ./png/"+filename)
 
 if __name__ == '__main__':
+
     exportBoxPlot()

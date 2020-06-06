@@ -10,65 +10,47 @@ from results_generator import *
 
 import pandas as pd
 
+def generate(assignments):
 
-def getProgrammingLanguages(df):
-
-    return list(set(df[PROGRAMMINGLANGUAGE_COLNAME].values.tolist()))
-
-def generate(measure, assignments, programminglanguages, prefix):
-
-    output_file_name = "belief_2_"+measure + ""+prefix+ '.txt'
+    if len(assignments) == 1:
+        output_file_name = 'belief_2_Task10.txt'
+    else:
+        output_file_name = 'belief_2.txt'
 
     remove(output_file_name)
 
     df = getPSPDF()
 
-    df = df  [ df[PROGRAMASSIGNMENT_COLNAME].isin(PROGRAM_ASSIGNMENT_LIST_LEVEL2) ]
-    for pa in assignments:
+    df = df  [ df[PROGRAMASSIGNMENT_COLNAME].isin(assignments) ]
 
-        if pa is not None:
-            pspDF = df[ df[PROGRAMASSIGNMENT_COLNAME] == pa ]
+    globalMin = min(df[ACTDEFINJCODE_COLNAME]  + df[ACTDEFINJDSGN_COLNAME])
+    globalMax = max(df[ACTDEFINJCODE_COLNAME]  + df[ACTDEFINJDSGN_COLNAME])
+
+    for pl in PROGRAMMING_LANGUAGES:
+
+        plDF = df[df[PROGRAMMINGLANGUAGE_COLNAME] == pl]
+
+        tempDF = pd.DataFrame()
+
+        tempDF['defects'] = plDF[ACTDEFINJCODE_COLNAME]  + plDF[ACTDEFINJDSGN_COLNAME]
+
+        samples = tempDF['defects'].values.tolist()
+
+        samples = normalize(samples, globalMin, globalMax)
+
+        ppl = pl
+
+        if pl == 'C#':
+            ppl = 'C\#'
+
+        if len(assignments) == 1:
+            appendTreatment(output_file_name, ppl + "_10", samples)
         else:
-            pspDF = df
+            appendTreatment(output_file_name, ppl, samples)
 
-
-
-        pLanguageS = programminglanguages
-
-        for pl in pLanguageS:
-
-            pl_paDF = pspDF[pspDF[PROGRAMMINGLANGUAGE_COLNAME] == pl]
-
-
-
-            tempDF = pd.DataFrame()
-
-            tempDF['productivity'] = pl_paDF[ACTLOC_COLNAME]/( (pl_paDF[ACTMIN_COLNAME] - ( pl_paDF[ACTMINPLAN_COLNAME] + pl_paDF[ACTMINDSGN_COLNAME]) )/60 )
-            tempDF['LOC'] = pl_paDF[ACTLOC_COLNAME]
-            tempDF['defect-density'] = pl_paDF[ACTDEFINJCODE_COLNAME]/ ( pl_paDF[ACTLOC_COLNAME] /1000)
-
-
-
-            samples = tempDF[measure].values.tolist()
-
-            ppl = pl
-
-            if pl == 'C#':
-                ppl  = 'C\#'
-
-            if pa is not None:
-                pp = pa
-                appendTreatment(output_file_name, "$"+pp+"_{"+ppl+"}$", samples)
-            else:
-                appendTreatment(output_file_name, "$" +  "{" + ppl + "}$", samples)
 
 
 if __name__ == '__main__':
 
-    generate('defect-density', [None], PROGRAMMING_LANGUAGES, '_all_assignments')
-    generate('defect-density', PROGRAM_ASSIGNMENT_LIST_LEVEL2, ['C', 'C++'], "")
-
-
-
-
-
+    generate(PROGRAM_ASSIGNMENT_LIST_LEVEL0)
+    generate(['10A'])

@@ -15,7 +15,9 @@ def calculateProductivity(df):
 
     # return df[ACTLOC_COLNAME] / (df[ACTMIN_COLNAME] / 60)
     #
-    return df[ACTLOC_COLNAME] / ((df[ACTMIN_COLNAME] - (df[ACTMINPLAN_COLNAME] + df[ACTMINDSGN_COLNAME])) / 60)
+    return   df[ACTLOC_COLNAME]/ (df[ACTMIN_COLNAME] /60 )
+
+    # return df[ACTLOC_COLNAME] / ((df[ACTMIN_COLNAME] - (df[ACTMINPLAN_COLNAME] + df[ACTMINDSGN_COLNAME])) / 60)
 
 def generateProductivityGroupedByTasks():
 
@@ -24,11 +26,14 @@ def generateProductivityGroupedByTasks():
     remove(output_file_name)
 
     df = getPSPDF()
-    print( "after 1 ", len(df))
+
     df = df[ df[PROGRAMMINGLANGUAGE_COLNAME].isin(PROGRAMMING_LANGUAGES)]
-    print( "after  2", len(df))
+
     df = df[ df[PROGRAMASSIGNMENT_COLNAME].isin(PROGRAM_ASSIGNMENT_LIST_LEVEL2)]
-    print( "after  3", len(df))
+
+    globalMin = min( df[ACTLOC_COLNAME]/ (df[ACTMIN_COLNAME] /60 ))
+    globalMax = max( df[ACTLOC_COLNAME]/ (df[ACTMIN_COLNAME] /60 ))
+
 
     for pa in PROGRAM_ASSIGNMENT_LIST_LEVEL2:
 
@@ -41,7 +46,9 @@ def generateProductivityGroupedByTasks():
         samples = tempDF[measure].values.tolist()
 
         pp = pa
-        appendTreatment(output_file_name, "$" + pp + "$", samples)
+
+        samples  = normalize(samples, globalMin, globalMax)
+        appendTreatment(output_file_name, "" + pp + "", samples)
 
 
 def generateProductivityGroupedByProgrammingLanguages():
@@ -53,6 +60,9 @@ def generateProductivityGroupedByProgrammingLanguages():
     df = getPSPDF()
     df = df[ df[PROGRAMASSIGNMENT_COLNAME].isin(PROGRAM_ASSIGNMENT_LIST_LEVEL2) ]
 
+    globalMin = min(df[ACTLOC_COLNAME] / (df[ACTMIN_COLNAME] / 60))
+    globalMax = max(df[ACTLOC_COLNAME] / (df[ACTMIN_COLNAME] / 60))
+
     for pa in PROGRAMMING_LANGUAGES:
 
         pspDF = df[df[PROGRAMMINGLANGUAGE_COLNAME] == pa]
@@ -63,8 +73,10 @@ def generateProductivityGroupedByProgrammingLanguages():
 
         samples = tempDF[measure].values.tolist()
 
+        samples = normalize(samples, globalMin, globalMax)
+
         pp = pa
-        appendTreatment(output_file_name, "$" + pp + "$", samples)
+        appendTreatment(output_file_name, "" + pp + "", samples)
 
 
 def generateProductivityGroupedByTask10CompletedByProgrammingLanguages():
@@ -75,6 +87,9 @@ def generateProductivityGroupedByTask10CompletedByProgrammingLanguages():
     df = getPSPDF()
     df = df[df[PROGRAMASSIGNMENT_COLNAME].isin(['10A'])]
 
+    globalMin = min(df[ACTLOC_COLNAME] / (df[ACTMIN_COLNAME] / 60))
+    globalMax = max(df[ACTLOC_COLNAME] / (df[ACTMIN_COLNAME] / 60))
+
     for pa in PROGRAMMING_LANGUAGES:
         pspDF = df[df[PROGRAMMINGLANGUAGE_COLNAME] == pa]
 
@@ -84,8 +99,10 @@ def generateProductivityGroupedByTask10CompletedByProgrammingLanguages():
 
         samples = tempDF[measure].values.tolist()
 
+        samples = normalize(samples, globalMin, globalMax)
+
         pp = pa
-        appendTreatment(output_file_name, "$10" + pp + "$", samples)
+        appendTreatment(output_file_name, "10" + pp + "", samples)
 
 
 def generateDefectDensityGroupedByTask10CompletedByProgrammingLanguages():
@@ -96,18 +113,50 @@ def generateDefectDensityGroupedByTask10CompletedByProgrammingLanguages():
     df = getPSPDF()
     df = df[df[PROGRAMASSIGNMENT_COLNAME].isin(['10A'])]
 
+    globalMin = min(df[ACTDEFINJCODE_COLNAME])
+    globalMax = max(df[ACTDEFINJCODE_COLNAME])
+
     for pa in PROGRAMMING_LANGUAGES:
         pspDF = df[df[PROGRAMMINGLANGUAGE_COLNAME] == pa]
 
         tempDF = pd.DataFrame()
 
-        tempDF[measure] = pspDF[ACTDEFINJCODE_COLNAME] / (pspDF[ACTLOC_COLNAME] / 1000)
+        tempDF[measure] = pspDF[ACTDEFINJCODE_COLNAME] #/ (pspDF[ACTLOC_COLNAME] / 1000)
+
+        samples = tempDF[measure].values.tolist()
+        samples = normalize(samples, globalMin, globalMax)
+
+        pp = pa
+        appendTreatment(output_file_name, "10" + pp + "", samples)
+
+
+def generateDefectsGroupedByTasks():
+    measure = 'defects'
+    output_file_name = 'belief_4_DefectsGroupedByTasks.txt'
+    remove(output_file_name)
+
+    df = getPSPDF()
+
+    df = df[df[PROGRAMMINGLANGUAGE_COLNAME].isin(PROGRAMMING_LANGUAGES)]
+
+    df = df[df[PROGRAMASSIGNMENT_COLNAME].isin(PROGRAM_ASSIGNMENT_LIST_LEVEL2)]
+
+    globalMin = min(df[ACTDEFINJCODE_COLNAME])
+    globalMax = max(df[ACTDEFINJCODE_COLNAME])
+
+    for pa in PROGRAM_ASSIGNMENT_LIST_LEVEL2:
+        pspDF = df[df[PROGRAMASSIGNMENT_COLNAME] == pa]
+
+        tempDF = pd.DataFrame()
+
+        tempDF[measure] = pspDF[ACTDEFINJCODE_COLNAME]
 
         samples = tempDF[measure].values.tolist()
 
         pp = pa
-        appendTreatment(output_file_name, "$10" + pp + "$", samples)
 
+        samples = normalize(samples, globalMin, globalMax)
+        appendTreatment(output_file_name,  pp , samples)
 
 
 if __name__ == '__main__':
