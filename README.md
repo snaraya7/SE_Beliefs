@@ -21,7 +21,7 @@ Requires: Python3 (to execute .py files) and Python2 (to execute .bat files)
 ### Belief 3
 
 1. python [belief3.py](belief3.py)
-2. Prints results in console and generates the box-plot (required plotly module) image in SE_Beliefs/png/ folder.
+2. Prints the required results to the console. To generate the box-plot (as shown in the paper) run [belief3_box_plot.py](belief3_box_plot.py) (but this requires the installation of plotly module and its dependencies).
 
 ### Belief 4
 
@@ -33,7 +33,8 @@ Requires: Python3 (to execute .py files) and Python2 (to execute .bat files)
 1. python [belief5.py](belief5.py)
 2. [belief5.bat](belief1.bat)
 
-The results (.txt files) are generated in the SE_Beliefs/results/ folder for beliefs 1,2,4, and 5. 
+In Summary, each beliefX.py generates a set of intermediate .txt files. Then running the corresponding beliefX.bat file reads those generated .txt files and writes the results to the SE_Beliefs/results/ folder (except belief 3).     
+
 
 ```
 For technical support e-mail Shrikanth N C (nc.shrikanth@gmail.com) with subject `SE Beliefs repository queries'
