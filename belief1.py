@@ -40,7 +40,7 @@ def generate(measure, assignments, programminglanguages):
     gDF = df[ (df[PROGRAMASSIGNMENT_COLNAME].isin(assignments)) & (df[PROGRAMMINGLANGUAGE_COLNAME].isin(programminglanguages))]
     globalMin , globalMax  = getGlobal(gDF, measure)
 
-    print(globalMin, globalMax, measure)
+    # print(globalMin, globalMax, measure)
 
 
     for pa in assignments:

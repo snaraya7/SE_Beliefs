@@ -5,7 +5,7 @@ Script to assess  Mills-Jones Hypothesis (Belief 3)
 License: See LICENSE file
 """
 
-
+from plotly.graph_objs._deprecations import Annotation
 from scipy.stats import *
 
 
@@ -13,6 +13,8 @@ from scipy.stats import *
 from Constants import *
 
 import numpy as np
+import plotly.graph_objs as go
+import plotly.io as pio
 from PSPConstants import *
 
 import pandas as pd
@@ -129,7 +131,21 @@ def exportBoxPlot():
                     bcolor = orange
 
                 outputStr += pl + " median = " + str(np.median(columnValues)) + " values = " + str(columnValues) +"\n"
+                local_boxplot_data.append(go.Box(fillcolor=bcolor,
+                                                 marker=dict(color=black),
+                                                 y=columnValues,
+                                                 name="<b>" + pl, showlegend=False, orientation="v", line_width=3,
+                                                 width=0.25))
 
+                annotationList.append(Annotation(
+                x=xIndex,
+                y=np.median(columnValues),
+                text='',
+                    arrowcolor="black",
+                    arrowsize=3,
+                    arrowwidth=1,
+                    arrowhead=1
+            ))
                 xIndex += 1
                 # fig.add_trace(,
                 #         row= rowIndex, col=colIndex)
@@ -150,7 +166,105 @@ def exportBoxPlot():
 
             fileName = ""+xMetric + '-' + yMetric
 
-            print(outputStr)
+            try:
+                plot_boxes(local_boxplot_data,annotationList, "img_P-DD.png" ,
+               '',
+               label+"", 0, 1)
+                print(outputStr)
+            except:
+                print(outputStr)
+
+
+
+
+
+def plot_boxes(data, annotationList, filename ,xaxisLabel, yAxisLabel, firstLine, secondLine):
+
+    xAxisTitle = '<br> '+xaxisLabel
+
+    from plotly.graph_objs._deprecations import Annotations
+    layout = go.Layout(
+        # plot_bgcolor= '#e8eaed',
+        plot_bgcolor='#FFFFFF',
+        autosize=False,
+
+        title='',
+
+        margin=dict(l=110, r=10, t=15, b=50),
+
+        xaxis=dict(
+            title='<b>' + xAxisTitle,
+            automargin=False,
+            # range=[-1, 1],
+            titlefont=dict(
+                family=FONT_NAME,
+                size=FONT_SIZE,
+                color='#000000'  # 7f7f7f'
+            ), tickfont=dict(
+                family=FONT_NAME,
+                size=FONT_SIZE
+                # color='blue'
+            ),
+            showgrid=True,
+            zeroline=False,
+            showline=True,
+            # mirror='ticks',
+            # gridcolor='#bdbdbd',
+            gridwidth=0.5,
+
+            zerolinecolor='#000000',
+            zerolinewidth=0.5,
+            linecolor='#000000',
+            linewidth=1
+
+        ),
+        yaxis=dict(
+            title="<b> "+yAxisLabel ,
+            automargin=False,
+            range=[0, 1],
+            showgrid=True,
+            zeroline=False,
+            showline=True,
+            showticklabels=True,
+
+            gridwidth=0.5,
+            gridcolor='#bdbdbd',
+            zerolinecolor='#000000',
+            zerolinewidth=0.5,
+            linecolor='#000000',
+            linewidth=1,
+            titlefont=dict(
+                family=FONT_NAME,
+                size=FONT_SIZE,
+                # color=color_blue
+            ), tickfont=dict(
+                family=FONT_NAME,
+                size=FONT_SIZE
+                # color='blue'
+            )
+        ),
+
+        # annotations=Annotations(annotationList)
+
+    )
+
+
+    fig = go.Figure(data=data, layout=layout)
+
+    maxY = 0
+
+    i= 0
+    while i < len(data):
+       tY = max(maxY, max(data[i].y))
+
+       if math.inf != tY:
+            maxY = tY
+
+       i+=1
+
+
+    pio.write_image(fig, "./png/"+filename, scale=4)
+    print("Belief 4 correlation distribution (box-plot) exported to  :  ./png/"+filename)
 
 if __name__ == '__main__':
 
