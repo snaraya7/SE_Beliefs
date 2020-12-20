@@ -26,7 +26,7 @@ Requires: Python3 (to execute .py files) and Python2 (to execute .bat files)
 ### Belief 4
 
 1. python [belief4.py](belief4.py)
-2. [belief4.bat](belief4.bat)
+2. Prints the required results to the console. Additionally exports a box-plot in /png folder.
 
 ### Belief 5
 
