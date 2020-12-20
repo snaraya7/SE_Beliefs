@@ -82,6 +82,7 @@ def calculateDD(pdf, filter=True):
     tempDF = pd.DataFrame()
 
     tempDF['defect-density'] = pdf[ACTDEFINJCODE_COLNAME] #/ (pdf[ACTLOC_COLNAME] / 1000)
+
     samples = tempDF['defect-density'].values.tolist()
 
     # if filter:

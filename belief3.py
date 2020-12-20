@@ -58,7 +58,7 @@ def computeMetric(xDF, metric):
     tempDF = pd.DataFrame()
 
     if metric == 'Code Defects':
-        tempDF['temp'] =    xDF[ACTDEFINJCODE_COLNAME]
+        tempDF['temp'] =    xDF[ACTDEFINJCODE_COLNAME] + xDF[ACTDEFINJDSGN_COLNAME] # Revision 1 "Inclusion of design defects"
     elif metric == 'Test Defects':
         tempDF['temp'] =  xDF[ACTDEFREMTEST_COLNAME]
     else:

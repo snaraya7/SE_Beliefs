@@ -1,175 +1,273 @@
 """
 @author : Shrikanth N C (nc.shrikanth@gmail.com)
 Date: 15 Dec 2019
-Script to assess Sackman’s Second law (Belief 4)
+Script to assess  Mills-Jones Hypothesis (Belief 3)
 License: See LICENSE file
 """
 
+from plotly.graph_objs._deprecations import Annotation
+from scipy.stats import *
+
+
+
+from Constants import *
+
+import numpy as np
+import plotly.graph_objs as go
+import plotly.io as pio
 from PSPConstants import *
-from results_generator import *
 
 import pandas as pd
 
+"""
+Revision 1
+"""
 
-def calculateProductivity(df):
-
-    # return df[ACTLOC_COLNAME] / (df[ACTMIN_COLNAME] / 60)
-    #
-    return   df[ACTLOC_COLNAME]/ (df[ACTMIN_COLNAME] /60 )
-
-    # return df[ACTLOC_COLNAME] / ((df[ACTMIN_COLNAME] - (df[ACTMINPLAN_COLNAME] + df[ACTMINDSGN_COLNAME])) / 60)
-
-def generateProductivityGroupedByTasks():
-
-    measure = 'productivity'
-    output_file_name = 'belief_4_ProductivityGroupedByTasks.txt'
-    remove(output_file_name)
-
-    df = getPSPDF()
-
-    df = df[ df[PROGRAMMINGLANGUAGE_COLNAME].isin(PROGRAMMING_LANGUAGES)]
-
-    df = df[ df[PROGRAMASSIGNMENT_COLNAME].isin(PROGRAM_ASSIGNMENT_LIST_LEVEL2)]
-
-    globalMin = min( df[ACTLOC_COLNAME]/ (df[ACTMIN_COLNAME] /60 ))
-    globalMax = max( df[ACTLOC_COLNAME]/ (df[ACTMIN_COLNAME] /60 ))
+def computeCorrelation(X, Y):
 
 
-    for pa in PROGRAM_ASSIGNMENT_LIST_LEVEL2:
+    pearResult = pearsonr(X, Y)
+    pearRho = pearResult[0]
+    pearPValue = pearResult[1]
 
-        pspDF = df[ df[PROGRAMASSIGNMENT_COLNAME] == pa]
+    spearResult = spearmanr(X, Y)
+    spearRho = spearResult[0]
+    spearPValue = spearResult[1]
 
-        tempDF = pd.DataFrame()
-
-        tempDF[measure] = calculateProductivity(pspDF)
-
-        samples = tempDF[measure].values.tolist()
-
-        pp = pa
-
-        samples  = normalize(samples, globalMin, globalMax)
-        appendTreatment(output_file_name, "" + pp + "", samples)
+    return [pearRho, pearPValue, spearRho,spearPValue]
 
 
-def generateProductivityGroupedByProgrammingLanguages():
+def getProgrammingLanguages(df):
 
-    measure = 'productivity'
-    output_file_name = 'belief_4_ProductivityGroupedByProgrammingLanguages.txt'
-    remove(output_file_name)
+    return list(set(df[PROGRAMMINGLANGUAGE_COLNAME].values.tolist()))
 
-    df = getPSPDF()
-    df = df[ df[PROGRAMASSIGNMENT_COLNAME].isin(PROGRAM_ASSIGNMENT_LIST_LEVEL2) ]
+# METRICS = ['P', 'E', 'DD' ,'LOC', 'T']
+METRICS = ['Production Rate', 'Code Defects']
 
-    globalMin = min(df[ACTLOC_COLNAME] / (df[ACTMIN_COLNAME] / 60))
-    globalMax = max(df[ACTLOC_COLNAME] / (df[ACTMIN_COLNAME] / 60))
-
-    for pa in PROGRAMMING_LANGUAGES:
-
-        pspDF = df[df[PROGRAMMINGLANGUAGE_COLNAME] == pa]
-
-        tempDF = pd.DataFrame()
-
-        tempDF[measure] = calculateProductivity(pspDF)
-
-        samples = tempDF[measure].values.tolist()
-
-        samples = normalize(samples, globalMin, globalMax)
-
-        pp = pa
-        appendTreatment(output_file_name, "" + pp + "", samples)
+# fig = make_subplots(
+#     rows=5, cols=2,
+#     subplot_titles=('Defect Density Vs Program Size',
+# 'Defect Density Vs Coding Time.png',
+# 'Prgramming Experience Vs Defect Density',
+# 'Prgramming Experience Vs Program Size',
+# 'Prgramming Experience Vs Coding Time.png',
+# 'Program Size Vs Coding Time.png',
+# 'Productivity Vs Defect Density.png',
+# 'Productivity Vs Prgramming Experience.png',
+# 'Productivity Vs Program Size.png',
+# 'Productivity Vs Coding Time.png'
+#     ))
 
 
-def generateProductivityGroupedByTask10CompletedByProgrammingLanguages():
-    measure = 'productivity'
-    output_file_name = 'belief_4_ProductivityGroupedByTask10CompletedByProgrammingLanguages.txt'
-    remove(output_file_name)
+def computeMetric(xDF, metric):
 
-    df = getPSPDF()
-    df = df[df[PROGRAMASSIGNMENT_COLNAME].isin(['10A'])]
+    tempDF = pd.DataFrame()
 
-    globalMin = min(df[ACTLOC_COLNAME] / (df[ACTMIN_COLNAME] / 60))
-    globalMax = max(df[ACTLOC_COLNAME] / (df[ACTMIN_COLNAME] / 60))
+    if metric == 'Code Defects':
+        tempDF['temp'] =    xDF[ACTDEFINJCODE_COLNAME]
+    elif metric == 'Test Defects':
+        tempDF['temp'] =  xDF[ACTDEFREMTEST_COLNAME]
+    elif metric == 'Production Rate':
+        tempDF['temp'] = xDF[ACTLOC_COLNAME] / (xDF[ACTMIN_COLNAME] / 60)
+    else:
+        float("error")
 
-    for pa in PROGRAMMING_LANGUAGES:
-        pspDF = df[df[PROGRAMMINGLANGUAGE_COLNAME] == pa]
+    return tempDF['temp'].values.tolist()
 
-        tempDF = pd.DataFrame()
+def deduceCorrelation(xDF, xMetric, yMetric):
 
-        tempDF[measure] = calculateProductivity(pspDF)
+    pearRho, pearPValue, spearRho, spearPValue = computeCorrelation(computeMetric(xDF, xMetric), computeMetric(xDF, yMetric))
 
-        samples = tempDF[measure].values.tolist()
-
-        samples = normalize(samples, globalMin, globalMax)
-
-        pp = pa
-        appendTreatment(output_file_name, "10" + pp + "", samples)
-
-
-def generateDefectDensityGroupedByTask10CompletedByProgrammingLanguages():
-    measure = 'defect-density'
-    output_file_name = 'belief_4_DefectDensityGroupedByTask10CompletedByProgrammingLanguages.txt'
-    remove(output_file_name)
-
-    df = getPSPDF()
-    df = df[df[PROGRAMASSIGNMENT_COLNAME].isin(['10A'])]
-
-    globalMin = min(df[ACTDEFINJCODE_COLNAME])
-    globalMax = max(df[ACTDEFINJCODE_COLNAME])
-
-    for pa in PROGRAMMING_LANGUAGES:
-        pspDF = df[df[PROGRAMMINGLANGUAGE_COLNAME] == pa]
-
-        tempDF = pd.DataFrame()
-
-        tempDF[measure] = pspDF[ACTDEFINJCODE_COLNAME] #/ (pspDF[ACTLOC_COLNAME] / 1000)
-
-        samples = tempDF[measure].values.tolist()
-        samples = normalize(samples, globalMin, globalMax)
-
-        pp = pa
-        appendTreatment(output_file_name, "10" + pp + "", samples)
+    if spearPValue < SIG_LEVEL:
+        return spearRho
+    else:
+        return 0
 
 
-def generateDefectsGroupedByTasks():
-    measure = 'defects'
-    output_file_name = 'belief_4_DefectsGroupedByTasks.txt'
-    remove(output_file_name)
+def exportBoxPlot():
+
+
 
     df = getPSPDF()
 
-    df = df[df[PROGRAMMINGLANGUAGE_COLNAME].isin(PROGRAMMING_LANGUAGES)]
+    programmingLanguageDF = pd.DataFrame()
 
-    df = df[df[PROGRAMASSIGNMENT_COLNAME].isin(PROGRAM_ASSIGNMENT_LIST_LEVEL2)]
+    rowIndex = 1
+    colIndex = 1
+    outputStr = '**** \t Output \t *****\n\n'
+    for i in range(0, len(METRICS)):
 
-    globalMin = min(df[ACTDEFINJCODE_COLNAME])
-    globalMax = max(df[ACTDEFINJCODE_COLNAME])
+        for j in range((i+1), len(METRICS)):
 
-    for pa in PROGRAM_ASSIGNMENT_LIST_LEVEL2:
-        pspDF = df[df[PROGRAMASSIGNMENT_COLNAME] == pa]
+            if i == j:
+                continue
 
-        tempDF = pd.DataFrame()
+            annotationList = []
+            xMetric = METRICS[i]
+            yMetric = METRICS[j]
 
-        tempDF[measure] = pspDF[ACTDEFINJCODE_COLNAME]
+            label = 'ρ ( X , Y )'
 
-        samples = tempDF[measure].values.tolist()
+            plCol = []
+            paCol = []
 
-        pp = pa
+            local_boxplot_data = []
+            xIndex = 0
 
-        samples = normalize(samples, globalMin, globalMax)
-        appendTreatment(output_file_name,  pp , samples)
+            for pl in PROGRAMMING_LANGUAGES:
 
+                columnValues = []
+
+                plDF = df[df[PROGRAMMINGLANGUAGE_COLNAME] == pl]
+
+
+                for pa in PROGRAM_ASSIGNMENT_LIST_ALL:
+
+                    pl_paDF = plDF[plDF[PROGRAMASSIGNMENT_COLNAME] == pa]
+
+
+                    columnValues.append(deduceCorrelation(pl_paDF, xMetric, yMetric))
+                    plCol.append(pl)
+                    paCol.append(pa)
+
+
+                if 'time' in xMetric or 'time' in yMetric:
+                    bcolor = blue
+                else:
+                    bcolor = orange
+
+                outputStr += pl + " median = " + str(np.median(columnValues)) + " values = " + str(columnValues) +"\n"
+                local_boxplot_data.append(go.Box(fillcolor=bcolor,
+                                                 marker=dict(color=black),
+                                                 y=columnValues,
+                                                 name="<b>" + pl, showlegend=False, orientation="v", line_width=3,
+                                                 width=0.25))
+
+                annotationList.append(Annotation(
+                x=xIndex,
+                y=np.median(columnValues),
+                text='',
+                    arrowcolor="black",
+                    arrowsize=3,
+                    arrowwidth=1,
+                    arrowhead=1
+            ))
+                xIndex += 1
+                # fig.add_trace(,
+                #         row= rowIndex, col=colIndex)
+
+                if colIndex == 2:
+                    colIndex = 1
+                    rowIndex += 1
+                else:
+                    colIndex += 1
+
+            programmingLanguageDF[label] = columnValues
+
+
+
+            # if i == len(METRICS) - 2:
+            #     programmingLanguageDF['Language'] = plCol
+            #     programmingLanguageDF['PA'] = paCol
+
+            fileName = ""+xMetric + '-' + yMetric
+
+            try:
+                plot_boxes(local_boxplot_data,annotationList, "img_defects_vs_production_rate.png" ,
+               '',
+               label+"", 0, 1)
+                print(outputStr)
+            except:
+                print(outputStr)
+
+def plot_boxes(data, annotationList, filename ,xaxisLabel, yAxisLabel, firstLine, secondLine):
+
+    xAxisTitle = '<br> '+xaxisLabel
+
+    from plotly.graph_objs._deprecations import Annotations
+    layout = go.Layout(
+        # plot_bgcolor= '#e8eaed',
+        plot_bgcolor='#FFFFFF',
+        autosize=False,
+
+        title='',
+
+        margin=dict(l=110, r=10, t=15, b=50),
+
+        xaxis=dict(
+            title='<b>' + xAxisTitle,
+            automargin=False,
+            # range=[-1, 1],
+            titlefont=dict(
+                family=FONT_NAME,
+                size=FONT_SIZE,
+                color='#000000'  # 7f7f7f'
+            ), tickfont=dict(
+                family=FONT_NAME,
+                size=FONT_SIZE
+                # color='blue'
+            ),
+            showgrid=True,
+            zeroline=False,
+            showline=True,
+            # mirror='ticks',
+            # gridcolor='#bdbdbd',
+            gridwidth=0.5,
+
+            zerolinecolor='#000000',
+            zerolinewidth=0.5,
+            linecolor='#000000',
+            linewidth=1
+
+        ),
+        yaxis=dict(
+            title="<b> "+yAxisLabel ,
+            automargin=False,
+            range=[0, 1],
+            showgrid=True,
+            zeroline=False,
+            showline=True,
+            showticklabels=True,
+
+            gridwidth=0.5,
+            gridcolor='#bdbdbd',
+            zerolinecolor='#000000',
+            zerolinewidth=0.5,
+            linecolor='#000000',
+            linewidth=1,
+            titlefont=dict(
+                family=FONT_NAME,
+                size=FONT_SIZE,
+                # color=color_blue
+            ), tickfont=dict(
+                family=FONT_NAME,
+                size=FONT_SIZE
+                # color='blue'
+            )
+        ),
+
+        # annotations=Annotations(annotationList)
+
+    )
+
+
+    fig = go.Figure(data=data, layout=layout)
+
+    maxY = 0
+
+    i= 0
+    while i < len(data):
+       tY = max(maxY, max(data[i].y))
+
+       if math.inf != tY:
+            maxY = tY
+
+       i+=1
+
+
+    pio.write_image(fig, "./png/"+filename, scale=4)
+    print("Belief 4 correlation distribution (box-plot) exported to  :  ./png/"+filename)
 
 if __name__ == '__main__':
 
-    generateProductivityGroupedByTasks()
-    generateProductivityGroupedByProgrammingLanguages()
-    generateProductivityGroupedByTask10CompletedByProgrammingLanguages()
-    generateDefectDensityGroupedByTask10CompletedByProgrammingLanguages()
-
-
-
-
-
-
-
-
+    exportBoxPlot()

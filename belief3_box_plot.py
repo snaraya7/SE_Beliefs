@@ -60,7 +60,8 @@ def computeMetric(xDF, metric):
     tempDF = pd.DataFrame()
 
     if metric == 'Code Defects':
-        tempDF['temp'] =    xDF[ACTDEFINJCODE_COLNAME]
+        # tempDF['temp'] =    xDF[ACTDEFINJCODE_COLNAME]
+        tempDF['temp'] = xDF[ACTDEFINJCODE_COLNAME] + xDF[ACTDEFINJDSGN_COLNAME] # Revision 1 "Inclusion of design defects"
     elif metric == 'Test Defects':
         tempDF['temp'] =  xDF[ACTDEFREMTEST_COLNAME]
     else:
@@ -167,7 +168,7 @@ def exportBoxPlot():
             fileName = ""+xMetric + '-' + yMetric
 
             try:
-                plot_boxes(local_boxplot_data,annotationList, "img_P-DD.png" ,
+                plot_boxes(local_boxplot_data,annotationList, "img_defects_correlation.png" ,
                '',
                label+"", 0, 1)
                 print(outputStr)
@@ -264,7 +265,7 @@ def plot_boxes(data, annotationList, filename ,xaxisLabel, yAxisLabel, firstLine
 
 
     pio.write_image(fig, "./png/"+filename, scale=4)
-    print("Belief 4 correlation distribution (box-plot) exported to  :  ./png/"+filename)
+    print("Belief 3 correlation distribution (box-plot) exported to  :  ./png/"+filename)
 
 if __name__ == '__main__':
 
